@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import AutomationSideBar from "@/components/AutomationSideBar"
-import { MinusIcon, PlusIcon } from "lucide-react"
+import { MinusIcon, PlusIcon, Trash2 } from "lucide-react"
 
 type Rule = {
   id: string
@@ -116,6 +116,12 @@ export default function AutomationRules() {
     setShowConfig(false)
   }
 
+  const handleDeleteRule = (id: string) => {
+    if (confirm("Are you sure you want to delete this rule?")) {
+      setRulesData(rulesData.filter((rule) => rule.id !== id))
+    }
+  }
+
   return (
     <main className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <div className="flex items-center justify-between mb-4 sm:mb-6">
@@ -206,6 +212,7 @@ export default function AutomationRules() {
                         <th className="text-left py-3 px-2 sm:px-4 font-medium text-sm">Action</th>
                         <th className="text-left py-3 px-2 sm:px-4 font-medium text-sm">Cloud</th>
                         <th className="text-left py-3 px-2 sm:px-4 font-medium text-sm">Status</th>
+                        <th className="text-center py-3 px-2 sm:px-4 font-medium text-sm">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -230,6 +237,15 @@ export default function AutomationRules() {
                               />
                               <span className="text-sm">{rule.status}</span>
                             </div>
+                          </td>
+                          <td className="py-3 px-2 sm:px-4 text-center">
+                            <Button
+                              variant="ghost"
+                              onClick={() => handleDeleteRule(rule.id)}
+                              className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                            > 
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
                           </td>
                         </tr>
                       ))}
