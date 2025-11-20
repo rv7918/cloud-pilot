@@ -1,36 +1,17 @@
-'use client'
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {  Lightbulb, Bell } from "lucide-react"
-import Header from "./components/Header"
-import CloudSpendCard from "./components/CloudSpendCard"
-import CloudSpendChart from "./components/CloudSpendChart"
-import Footer from "./components/Footer"
-import ActiveAlerts from "./components/ActiveAlerts"
+import Header from "@/components/Header"
+import CloudSpendCard from "@/components/CloudSpendCard"
+import CloudSpendChart from "@/components/CloudSpendChart"
+import Footer from "@/components/Footer"
+import ActiveAlerts from "@/components/ActiveAlerts"
+import { getCloudSpendData } from "./api/cloudMonthlySpend/route"
+import { getCloudData } from "./api/cloudSpend/route"
 
-const cloudSpendData = [
-  { name: "AWS", spend: 5420, trend: 99.8, color: "hsl(221.2 83.2% 53.3%)", bgColor: "#EFF6FF" },
-  { name: "Azure", spend: 1340, trend: 54.8, color: "hsl(280 100% 70%)", bgColor: "#EEF2FF" },
-  { name: "GCP", spend: 2940, trend: 64.8, color: "hsl(280 50% 50%)", bgColor: "#FAF5FF" },
-  { name: "CPL", spend: 1025, trend: 99.8, color: "hsl(142.1 76.2% 36.3%)", bgColor: "#ECFDF5" },
-]
+export default async function Home() {
+  const monthlySpendData = await getCloudSpendData()
+  const cloudSpendData = await getCloudData()
 
-const monthlySpendData = [
-  { month: "Jan", spend: 1200, capacity: 6000 },
-  { month: "Feb", spend: 1800, capacity: 6000 },
-  { month: "Mar", spend: 2700, capacity: 6000 },
-  { month: "Apr", spend: 500, capacity: 6000 },
-  { month: "May", spend: 1500, capacity: 6000 },
-  { month: "Jun", spend: 2700, capacity: 6000 },
-  { month: "Jul", spend: 2000, capacity: 6000 },
-  { month: "Aug", spend: 1600, capacity: 6000 },
-  { month: "Sep", spend: 1900, capacity: 6000 },
-  { month: "Oct", spend: 500, capacity: 6000 },
-  { month: "Nov", spend: 1400, capacity: 6000 },
-  { month: "Dec", spend: 1800, capacity: 6000 },
-]
-
-export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
