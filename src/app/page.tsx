@@ -1,10 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {  Lightbulb, Bell } from "lucide-react"
-import Header from "./components/Header"
-import CloudSpendCard from "./components/CloudSpendCard"
-import CloudSpendChart from "./components/CloudSpendChart"
-import Footer from "./components/Footer"
-import ActiveAlerts from "./components/ActiveAlerts"
+import Header from "@/components/Header"
+import CloudSpendCard from "@/components/CloudSpendCard"
+import CloudSpendChart from "@/components/CloudSpendChart"
+import Footer from "@/components/Footer"
+import ActiveAlerts from "@/components/ActiveAlerts"
 import { getCloudSpendData } from "./api/cloudMonthlySpend/route"
 
 const cloudSpendData = [

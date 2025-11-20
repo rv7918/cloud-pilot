@@ -24,9 +24,10 @@ export default function ActiveAlerts() {
              </p>
            </div>
          </div>
-         <Button className="bg-blue-700 text-white hover:bg-orange-600 w-full sm:w-auto ">View Report</Button>
+         <Button className="bg-blue-700 text-white hover:bg-blue-500 w-full sm:w-auto ">View Report</Button>
        </div>
      </CardContent>
    </Card>
   )
 }
+
