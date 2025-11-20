@@ -6,16 +6,11 @@ import CloudSpendChart from "@/components/CloudSpendChart"
 import Footer from "@/components/Footer"
 import ActiveAlerts from "@/components/ActiveAlerts"
 import { getCloudSpendData } from "./api/cloudMonthlySpend/route"
-
-const cloudSpendData = [
-  { name: "AWS", spend: 5420, trend: 99.8, color: "hsl(221.2 83.2% 53.3%)", bgColor: "#EFF6FF" },
-  { name: "Azure", spend: 1340, trend: 54.8, color: "hsl(280 100% 70%)", bgColor: "#EEF2FF" },
-  { name: "GCP", spend: 2940, trend: 64.8, color: "hsl(280 50% 50%)", bgColor: "#FAF5FF" },
-  { name: "CPL", spend: 1025, trend: 99.8, color: "hsl(142.1 76.2% 36.3%)", bgColor: "#ECFDF5" },
-]
+import { getCloudData } from "./api/cloudSpend/route"
 
 export default async function Home() {
   const monthlySpendData = await getCloudSpendData()
+  const cloudSpendData = await getCloudData()
 
   return (
     <div className="min-h-screen bg-background">
