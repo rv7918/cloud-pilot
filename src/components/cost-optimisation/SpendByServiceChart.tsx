@@ -33,7 +33,7 @@ export default function SpendByServiceChart() {
         <CardTitle>Spend by service</CardTitle>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className="h-[300px]">
+        <ChartContainer config={chartConfig} className="h-[200px] w-full">
           <BarChart data={spendByServiceData}>
             <XAxis
               dataKey="service"

@@ -25,7 +25,7 @@ export default function SpendByProviderChart() {
         <CardTitle>Spend by provider</CardTitle>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className="h-[300px]">
+        <ChartContainer config={chartConfig} className="h-[200px] w-full">
           <AreaChart data={spendByProviderData}>
             <XAxis
               dataKey="period"
