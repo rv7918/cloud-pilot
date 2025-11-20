@@ -3,6 +3,13 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { useState } from "react"
 
 export default function AutomationSideBar({ showConfig, setShowConfig }: { showConfig: boolean, setShowConfig: (show: boolean) => void }) {
@@ -65,16 +72,27 @@ export default function AutomationSideBar({ showConfig, setShowConfig }: { showC
           <label className="text-sm font-medium mb-2 block">
             Cloud Provider
           </label>
-          <Input
-            placeholder="Select cloud provider"
-            value={formData.cloudProvider}
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                cloudProvider: e.target.value,
-              })
-            }
-          />
+            <Select
+              value={formData.cloudProvider}
+              onValueChange={(value) =>
+                setFormData({
+                  ...formData,
+                  cloudProvider: value,
+                })
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select cloud provider" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="aws">AWS</SelectItem>
+                <SelectItem value="azure">Azure</SelectItem>
+                <SelectItem value="gcp">GCP</SelectItem>
+                <SelectItem value="oracle">Oracle Cloud</SelectItem>
+                <SelectItem value="ibm">IBM Cloud</SelectItem>
+                <SelectItem value="alibaba">Alibaba Cloud</SelectItem>
+              </SelectContent>
+            </Select>
         </div>
 
         <div>
@@ -94,6 +112,7 @@ export default function AutomationSideBar({ showConfig, setShowConfig }: { showC
           <Button
             variant="outline"
             className="flex-1"
+            onClick={() => setShowConfig(false)}
           >
             Cancel
           </Button>
