@@ -1,65 +1,99 @@
-import Image from "next/image";
+'use client'
+
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {  Lightbulb, Bell } from "lucide-react"
+import Header from "./components/Header"
+import CloudSpendCard from "./components/CloudSpendCard"
+import CloudSpendChart from "./components/CloudSpendChart"
+import Footer from "./components/Footer"
+import ActiveAlerts from "./components/ActiveAlerts"
+
+const cloudSpendData = [
+  { name: "AWS", spend: 5420, trend: 99.8, color: "hsl(221.2 83.2% 53.3%)", bgColor: "#EFF6FF" },
+  { name: "Azure", spend: 1340, trend: 54.8, color: "hsl(280 100% 70%)", bgColor: "#EEF2FF" },
+  { name: "GCP", spend: 2940, trend: 64.8, color: "hsl(280 50% 50%)", bgColor: "#FAF5FF" },
+  { name: "CPL", spend: 1025, trend: 99.8, color: "hsl(142.1 76.2% 36.3%)", bgColor: "#ECFDF5" },
+]
+
+const monthlySpendData = [
+  { month: "Jan", spend: 1200, capacity: 6000 },
+  { month: "Feb", spend: 1800, capacity: 6000 },
+  { month: "Mar", spend: 2700, capacity: 6000 },
+  { month: "Apr", spend: 500, capacity: 6000 },
+  { month: "May", spend: 1500, capacity: 6000 },
+  { month: "Jun", spend: 2700, capacity: 6000 },
+  { month: "Jul", spend: 2000, capacity: 6000 },
+  { month: "Aug", spend: 1600, capacity: 6000 },
+  { month: "Sep", spend: 1900, capacity: 6000 },
+  { month: "Oct", spend: 500, capacity: 6000 },
+  { month: "Nov", spend: 1400, capacity: 6000 },
+  { month: "Dec", spend: 1800, capacity: 6000 },
+]
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <Header />
+
+      <main className="container mx-auto px-6 py-8 space-y-6">
+        {/* Cloud Spend Cards */}
+        <CloudSpendCard data={cloudSpendData} />
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Chart Section */}
+          <div className="lg:col-span-2 space-y-4">
+            <CloudSpendChart data={monthlySpendData} />
+          </div>
+
+          {/* Insights and Alerts Sidebar */}
+          <div className="space-y-4">
+            {/* Agent Insights */}
+            <Card>
+              <CardHeader>
+                <div className="flex items-center gap-2">
+                  <Lightbulb className="h-5 w-5 text-yellow-500" />
+                  <CardTitle className="text-lg">Agent Insights</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <p className="text-sm">Compute Spend trend 1%</p>
+                <p className="text-sm text-muted-foreground">Consider changing instance sizing</p>
+              </CardContent>
+            </Card>
+
+            {/* Active Alerts */}
+            <Card>
+              <CardHeader>
+                <div className="flex items-center gap-2">
+                  <Bell className="h-5 w-5 text-red-500" />
+                  <CardTitle className="text-lg">Active Alerts</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <div className="h-2 w-2 rounded-full bg-red-500" />
+                  <p className="text-sm">CPU Spike in EC2</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="h-2 w-2 rounded-full bg-orange-500" />
+                  <p className="text-sm">Network Latency in us-west</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="h-2 w-2 rounded-full bg-yellow-500" />
+                  <p className="text-sm">High storage cost on Data Lake</p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+
+        {/* Active Alerts Section */}
+        <ActiveAlerts />
       </main>
+
+      {/* Footer */}
+      <Footer />
     </div>
-  );
+  )
 }
