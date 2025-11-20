@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import AutomationSideBar from "@/components/AutomationSideBar"
+import { MinusIcon, PlusIcon, Trash2 } from "lucide-react"
 
 type Rule = {
   id: string
@@ -22,7 +23,7 @@ type Rule = {
   status: "Active" | "Paused"
 }
 
-const rulesData: Rule[] = [
+const initialRulesData: Rule[] = [
   {
     id: "1",
     ruleName: "Auto-Scale EC2",
@@ -70,120 +71,189 @@ const getCloudBadgeColor = (cloud: string) => {
   }
 }
 
+const getCloudDisplayName = (value: string): string => {
+  const cloudMap: Record<string, string> = {
+    aws: "AWS",
+    azure: "Azure",
+    gcp: "GCP",
+    oracle: "Oracle Cloud",
+    ibm: "IBM Cloud",
+    alibaba: "Alibaba Cloud",
+  }
+  return cloudMap[value] || value
+}
+
 export default function AutomationRules() {
-  const [showConfig, setShowConfig] = useState(false)
+  const [showConfig, setShowConfig] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [rulesData, setRulesData] = useState<Rule[]>(initialRulesData)
+
+  const handleSaveRule = (formData: {
+    ruleName: string
+    triggerType: string
+    actionType: string
+    cloudProvider: string
+    schedule: string
+  }) => {
+    if (!formData.ruleName || !formData.triggerType || !formData.actionType || !formData.cloudProvider) {
+      setError("Please fill in all required fields")
+      return
+    }
+
+    // Clear any previous errors
+    setError(null)
+
+    const newRule: Rule = {
+      id: Date.now().toString(),
+      ruleName: formData.ruleName,
+      trigger: formData.triggerType,
+      action: formData.actionType,
+      cloud: getCloudDisplayName(formData.cloudProvider),
+      status: "Active",
+    }
+
+    setRulesData([...rulesData, newRule])
+    setShowConfig(false)
+  }
+
+  const handleDeleteRule = (id: string) => {
+    if (confirm("Are you sure you want to delete this rule?")) {
+      setRulesData(rulesData.filter((rule) => rule.id !== id))
+    }
+  }
 
   return (
-    <main className="container mx-auto px-6 py-8">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-semibold">Automation Rules</h1>
+    <main className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <div className="flex items-center justify-between mb-4 sm:mb-6">
+        <h1 className="text-xl sm:text-2xl font-semibold">Automation Rules</h1>
+        {error && <p className="text-red-500 text-sm">{error}</p>}
       </div>
 
-      <div className="flex flex-wrap items-center gap-4 mb-4">
-            <Select>
-              <SelectTrigger className="w-[150px]">
-                <SelectValue placeholder="Cloud Provider" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All</SelectItem>
-                <SelectItem value="aws">AWS</SelectItem>
-                <SelectItem value="azure">Azure</SelectItem>
-                <SelectItem value="gcp">GCP</SelectItem>
-              </SelectContent>
-            </Select>
+      <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+        <div className="flex flex-wrap gap-3 sm:gap-4 flex-1">
+          <Select>
+            <SelectTrigger className="w-full sm:w-[150px]">
+              <SelectValue placeholder="Cloud Provider" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="aws">AWS</SelectItem>
+              <SelectItem value="azure">Azure</SelectItem>
+              <SelectItem value="gcp">GCP</SelectItem>
+            </SelectContent>
+          </Select>
 
-            <Select>
-              <SelectTrigger className="w-[150px]">
-                <SelectValue placeholder="Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All</SelectItem>
-                <SelectItem value="active">Active</SelectItem>
-                <SelectItem value="paused">Paused</SelectItem>
-              </SelectContent>
-            </Select>
+          <Select>
+            <SelectTrigger className="w-full sm:w-[150px]">
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="active">Active</SelectItem>
+              <SelectItem value="paused">Paused</SelectItem>
+            </SelectContent>
+          </Select>
 
-            <Select>
-              <SelectTrigger className="w-[150px]">
-                <SelectValue placeholder="Sort by" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="name">Name</SelectItem>
-                <SelectItem value="status">Status</SelectItem>
-                <SelectItem value="cloud">Cloud</SelectItem>
-              </SelectContent>
-            </Select>
+          <Select>
+            <SelectTrigger className="w-full sm:w-[150px]">
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="name">Name</SelectItem>
+              <SelectItem value="status">Status</SelectItem>
+              <SelectItem value="cloud">Cloud</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
 
-            <div className="ml-auto flex items-center gap-4">
-              <Select>
-                <SelectTrigger className="w-[150px]">
-                  <SelectValue placeholder="Last 30 days" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="7">Last 7 days</SelectItem>
-                  <SelectItem value="30">Last 30 days</SelectItem>
-                  <SelectItem value="90">Last 90 days</SelectItem>
-                </SelectContent>
-              </Select>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
+          <Select>
+            <SelectTrigger className="w-full sm:w-[150px]">
+              <SelectValue placeholder="Last 30 days" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="7">Last 7 days</SelectItem>
+              <SelectItem value="30">Last 30 days</SelectItem>
+              <SelectItem value="90">Last 90 days</SelectItem>
+            </SelectContent>
+          </Select>
 
-              <Button onClick={() => setShowConfig(!showConfig)}>
-                Rule Configuration
-              </Button>
-            </div>
-          </div>
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
+          <Button 
+            onClick={() => setShowConfig(!showConfig)}
+            className="w-full sm:w-auto"
+          >
+            <span className="hidden sm:inline">
+              {showConfig ? 'Hide Configuration' : 'Show Configuration'}
+            </span>
+            <span className="sm:hidden">
+              {showConfig ? 'Hide' : 'Show'} Config
+            </span>
+            {showConfig ? <MinusIcon className="w-4 h-4 ml-2" /> : <PlusIcon className="w-4 h-4 ml-2" />}
+          </Button>
+        </div>
+      </div>
+
+      <div className={`grid grid-cols-1 ${showConfig ? 'lg:grid-cols-3' : 'lg:grid-cols-1'} gap-4 sm:gap-6`}>
         {/* Main Content */}
-        
-        <div className="lg:col-span-2 space-y-4">
-          {/* Filters */}
-         
-
+        <div className={`${showConfig ? 'lg:col-span-2' : ''} space-y-4`}>
           {/* Rules Table */}
           <Card>
             <CardHeader>
-              <CardTitle>Rules</CardTitle>
+              <CardTitle className="text-lg sm:text-xl">Rules</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b">
-                      <th className="text-left py-3 px-4 font-medium">Rule Name</th>
-                      <th className="text-left py-3 px-4 font-medium">Trigger</th>
-                      <th className="text-left py-3 px-4 font-medium">Action</th>
-                      <th className="text-left py-3 px-4 font-medium">Cloud</th>
-                      <th className="text-left py-3 px-4 font-medium">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {rulesData.map((rule) => (
-                      <tr key={rule.id} className="border-b">
-                        <td className="py-3 px-4">{rule.ruleName}</td>
-                        <td className="py-3 px-4">{rule.trigger}</td>
-                        <td className="py-3 px-4">{rule.action}</td>
-                        <td className="py-3 px-4">
-                          <Badge className={getCloudBadgeColor(rule.cloud)}>
-                            {rule.cloud}
-                          </Badge>
-                        </td>
-                        <td className="py-3 px-4">
-                          <div className="flex items-center gap-2">
-                            <div
-                              className={`h-2 w-2 rounded-full ${
-                                rule.status === "Active"
-                                  ? "bg-green-500"
-                                  : "bg-orange-500"
-                              }`}
-                            />
-                            <span>{rule.status}</span>
-                          </div>
-                        </td>
+              <div className="overflow-x-auto -mx-4 sm:mx-0">
+                <div className="inline-block min-w-full align-middle px-4 sm:px-0">
+                  <table className="w-full min-w-[640px]">
+                    <thead>
+                      <tr className="border-b">
+                        <th className="text-left py-3 px-2 sm:px-4 font-medium text-sm">Rule Name</th>
+                        <th className="text-left py-3 px-2 sm:px-4 font-medium text-sm">Trigger</th>
+                        <th className="text-left py-3 px-2 sm:px-4 font-medium text-sm">Action</th>
+                        <th className="text-left py-3 px-2 sm:px-4 font-medium text-sm">Cloud</th>
+                        <th className="text-left py-3 px-2 sm:px-4 font-medium text-sm">Status</th>
+                        <th className="text-center py-3 px-2 sm:px-4 font-medium text-sm">Actions</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {rulesData.map((rule) => (
+                        <tr key={rule.id} className="border-b">
+                          <td className="py-3 px-2 sm:px-4 text-sm">{rule.ruleName}</td>
+                          <td className="py-3 px-2 sm:px-4 text-sm">{rule.trigger}</td>
+                          <td className="py-3 px-2 sm:px-4 text-sm">{rule.action}</td>
+                          <td className="py-3 px-2 sm:px-4">
+                            <Badge className={`${getCloudBadgeColor(rule.cloud)} pointer-events-none`}>
+                              {rule.cloud}
+                            </Badge>
+                          </td>
+                          <td className="py-3 px-2 sm:px-4">
+                            <div className="flex items-center gap-2">
+                              <div
+                                className={`h-2 w-2 rounded-full ${
+                                  rule.status === "Active"
+                                    ? "bg-green-500"
+                                    : "bg-orange-500"
+                                }`}
+                              />
+                              <span className="text-sm">{rule.status}</span>
+                            </div>
+                          </td>
+                          <td className="py-3 px-2 sm:px-4 text-center">
+                            <Button
+                              variant="ghost"
+                              onClick={() => handleDeleteRule(rule.id)}
+                              className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                            > 
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
-              <p className="text-sm text-muted-foreground mt-4">
+              <p className="text-xs sm:text-sm text-muted-foreground mt-4">
                 Data last synced 2 mins ago
               </p>
             </CardContent>
@@ -191,8 +261,15 @@ export default function AutomationRules() {
         </div>
 
         {/* Rule Configuration Sidebar */}
-        <AutomationSideBar />
-        
+        {showConfig && (
+          <div className="lg:col-span-1">
+            <AutomationSideBar 
+              showConfig={showConfig} 
+              setShowConfig={setShowConfig}
+              onSave={handleSaveRule}
+            />
+          </div>
+        )}
       </div>
 
       <div className="mt-8 text-right">

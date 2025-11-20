@@ -3,17 +3,66 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { useState } from "react"
 
-export default function AutomationSideBar() {
-  const [formData, setFormData] = useState({
+type FormData = {
+  ruleName: string
+  triggerType: string
+  actionType: string
+  cloudProvider: string
+  schedule: string
+}
+
+export default function AutomationSideBar({ 
+  showConfig, 
+  setShowConfig,
+  onSave 
+}: { 
+  showConfig: boolean
+  setShowConfig: (show: boolean) => void
+  onSave: (formData: FormData) => void
+}) {
+  const [formData, setFormData] = useState<FormData>({
     ruleName: "",
     triggerType: "",
     actionType: "",
     cloudProvider: "",
     schedule: "",
   })
+
+  const handleSave = () => {
+    onSave(formData)
+    // Reset form after saving
+    setFormData({
+      ruleName: "",
+      triggerType: "",
+      actionType: "",
+      cloudProvider: "",
+      schedule: "",
+    })
+  }
+
+  const handleCancel = () => {
+    setShowConfig(false)
+    // Reset form on cancel
+    setFormData({
+      ruleName: "",
+      triggerType: "",
+      actionType: "",
+      cloudProvider: "",
+      schedule: "",
+    })
+  }
   return (
+    <>
+    {showConfig && (
     <div className="lg:col-span-1">
     <Card>
       <CardHeader>
@@ -63,16 +112,27 @@ export default function AutomationSideBar() {
           <label className="text-sm font-medium mb-2 block">
             Cloud Provider
           </label>
-          <Input
-            placeholder="Select cloud provider"
-            value={formData.cloudProvider}
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                cloudProvider: e.target.value,
-              })
-            }
-          />
+            <Select
+              value={formData.cloudProvider}
+              onValueChange={(value) =>
+                setFormData({
+                  ...formData,
+                  cloudProvider: value,
+                })
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select cloud provider" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="aws">AWS</SelectItem>
+                <SelectItem value="azure">Azure</SelectItem>
+                <SelectItem value="gcp">GCP</SelectItem>
+                <SelectItem value="oracle">Oracle Cloud</SelectItem>
+                <SelectItem value="ibm">IBM Cloud</SelectItem>
+                <SelectItem value="alibaba">Alibaba Cloud</SelectItem>
+              </SelectContent>
+            </Select>
         </div>
 
         <div>
@@ -92,15 +152,21 @@ export default function AutomationSideBar() {
           <Button
             variant="outline"
             className="flex-1"
+            onClick={handleCancel}
           >
             Cancel
           </Button>
-          <Button className="flex-1 bg-blue-700 hover:bg-blue-600">
+          <Button 
+            className="flex-1 bg-blue-700 hover:bg-blue-600"
+            onClick={handleSave}
+          >
             Save
           </Button>
         </div>
       </CardContent>
     </Card>
   </div>
+  )}
+  </>
   )
 }
