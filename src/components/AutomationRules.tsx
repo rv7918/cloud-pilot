@@ -23,7 +23,7 @@ type Rule = {
   status: "Active" | "Paused"
 }
 
-const rulesData: Rule[] = [
+const initialRulesData: Rule[] = [
   {
     id: "1",
     ruleName: "Auto-Scale EC2",
@@ -71,13 +71,56 @@ const getCloudBadgeColor = (cloud: string) => {
   }
 }
 
+const getCloudDisplayName = (value: string): string => {
+  const cloudMap: Record<string, string> = {
+    aws: "AWS",
+    azure: "Azure",
+    gcp: "GCP",
+    oracle: "Oracle Cloud",
+    ibm: "IBM Cloud",
+    alibaba: "Alibaba Cloud",
+  }
+  return cloudMap[value] || value
+}
+
 export default function AutomationRules() {
   const [showConfig, setShowConfig] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [rulesData, setRulesData] = useState<Rule[]>(initialRulesData)
+
+  const handleSaveRule = (formData: {
+    ruleName: string
+    triggerType: string
+    actionType: string
+    cloudProvider: string
+    schedule: string
+  }) => {
+    if (!formData.ruleName || !formData.triggerType || !formData.actionType || !formData.cloudProvider) {
+      setError("Please fill in all required fields")
+      return
+    }
+
+    // Clear any previous errors
+    setError(null)
+
+    const newRule: Rule = {
+      id: Date.now().toString(),
+      ruleName: formData.ruleName,
+      trigger: formData.triggerType,
+      action: formData.actionType,
+      cloud: getCloudDisplayName(formData.cloudProvider),
+      status: "Active",
+    }
+
+    setRulesData([...rulesData, newRule])
+    setShowConfig(false)
+  }
 
   return (
     <main className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <div className="flex items-center justify-between mb-4 sm:mb-6">
         <h1 className="text-xl sm:text-2xl font-semibold">Automation Rules</h1>
+        {error && <p className="text-red-500 text-sm">{error}</p>}
       </div>
 
       <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
@@ -204,7 +247,11 @@ export default function AutomationRules() {
         {/* Rule Configuration Sidebar */}
         {showConfig && (
           <div className="lg:col-span-1">
-            <AutomationSideBar showConfig={showConfig} setShowConfig={setShowConfig}/>
+            <AutomationSideBar 
+              showConfig={showConfig} 
+              setShowConfig={setShowConfig}
+              onSave={handleSaveRule}
+            />
           </div>
         )}
       </div>

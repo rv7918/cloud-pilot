@@ -12,14 +12,54 @@ import {
 } from "@/components/ui/select"
 import { useState } from "react"
 
-export default function AutomationSideBar({ showConfig, setShowConfig }: { showConfig: boolean, setShowConfig: (show: boolean) => void }) {
-  const [formData, setFormData] = useState({
+type FormData = {
+  ruleName: string
+  triggerType: string
+  actionType: string
+  cloudProvider: string
+  schedule: string
+}
+
+export default function AutomationSideBar({ 
+  showConfig, 
+  setShowConfig,
+  onSave 
+}: { 
+  showConfig: boolean
+  setShowConfig: (show: boolean) => void
+  onSave: (formData: FormData) => void
+}) {
+  const [formData, setFormData] = useState<FormData>({
     ruleName: "",
     triggerType: "",
     actionType: "",
     cloudProvider: "",
     schedule: "",
   })
+
+  const handleSave = () => {
+    onSave(formData)
+    // Reset form after saving
+    setFormData({
+      ruleName: "",
+      triggerType: "",
+      actionType: "",
+      cloudProvider: "",
+      schedule: "",
+    })
+  }
+
+  const handleCancel = () => {
+    setShowConfig(false)
+    // Reset form on cancel
+    setFormData({
+      ruleName: "",
+      triggerType: "",
+      actionType: "",
+      cloudProvider: "",
+      schedule: "",
+    })
+  }
   return (
     <>
     {showConfig && (
@@ -112,11 +152,14 @@ export default function AutomationSideBar({ showConfig, setShowConfig }: { showC
           <Button
             variant="outline"
             className="flex-1"
-            onClick={() => setShowConfig(false)}
+            onClick={handleCancel}
           >
             Cancel
           </Button>
-          <Button className="flex-1 bg-blue-700 hover:bg-blue-600">
+          <Button 
+            className="flex-1 bg-blue-700 hover:bg-blue-600"
+            onClick={handleSave}
+          >
             Save
           </Button>
         </div>
