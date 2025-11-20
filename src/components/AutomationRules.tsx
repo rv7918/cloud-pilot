@@ -222,7 +222,7 @@ export default function AutomationRules() {
                           <td className="py-3 px-2 sm:px-4 text-sm">{rule.trigger}</td>
                           <td className="py-3 px-2 sm:px-4 text-sm">{rule.action}</td>
                           <td className="py-3 px-2 sm:px-4">
-                            <Badge className={getCloudBadgeColor(rule.cloud)}>
+                            <Badge className={`${getCloudBadgeColor(rule.cloud)} pointer-events-none`}>
                               {rule.cloud}
                             </Badge>
                           </td>
