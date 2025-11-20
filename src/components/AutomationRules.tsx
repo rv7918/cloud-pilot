@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import AutomationSideBar from "@/components/AutomationSideBar"
+import { MinusIcon, PlusIcon } from "lucide-react"
 
 type Rule = {
   id: string
@@ -71,7 +72,7 @@ const getCloudBadgeColor = (cloud: string) => {
 }
 
 export default function AutomationRules() {
-  const [showConfig, setShowConfig] = useState(false)
+  const [showConfig, setShowConfig] = useState(true)
 
   return (
     <main className="container mx-auto px-6 py-8">
@@ -127,11 +128,12 @@ export default function AutomationRules() {
               </Select>
 
               <Button onClick={() => setShowConfig(!showConfig)}>
-                Rule Configuration
+                {showConfig ? 'Hide Configuration' : 'Show Configuration'}
+                {showConfig ? <MinusIcon className="w-4 h-4" /> : <PlusIcon className="w-4 h-4" />}
               </Button>
             </div>
           </div>
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className={`grid grid-cols-2 ${showConfig ? 'lg:grid-cols-3' : 'lg:grid-cols-2'} gap-6`}>
         {/* Main Content */}
         
         <div className="lg:col-span-2 space-y-4">
@@ -191,7 +193,7 @@ export default function AutomationRules() {
         </div>
 
         {/* Rule Configuration Sidebar */}
-        <AutomationSideBar />
+        <AutomationSideBar showConfig={showConfig} setShowConfig={setShowConfig}/>
         
       </div>
 

@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
 
-export default function AutomationSideBar() {
+export default function AutomationSideBar({ showConfig, setShowConfig }: { showConfig: boolean, setShowConfig: (show: boolean) => void }) {
   const [formData, setFormData] = useState({
     ruleName: "",
     triggerType: "",
@@ -14,6 +14,8 @@ export default function AutomationSideBar() {
     schedule: "",
   })
   return (
+    <>
+    {showConfig && (
     <div className="lg:col-span-1">
     <Card>
       <CardHeader>
@@ -102,5 +104,7 @@ export default function AutomationSideBar() {
       </CardContent>
     </Card>
   </div>
+  )}
+  </>
   )
 }
