@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 
 export default function ActiveAlerts() {
   return (
-     <Card>
+     <Card className="shadow-none">
      <CardContent className="pt-6">
        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-10">
          <div className="space-y-2 flex-1">

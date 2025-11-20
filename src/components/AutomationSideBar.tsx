@@ -64,7 +64,7 @@ export default function AutomationSideBar({
     <>
     {showConfig && (
     <div className="lg:col-span-1">
-    <Card>
+    <Card className="shadow-none">
       <CardHeader>
         <CardTitle>Rule Configuration</CardTitle>
       </CardHeader>

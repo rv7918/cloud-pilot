@@ -197,7 +197,7 @@ export default function AutomationRules() {
         {/* Main Content */}
         <div className={`${showConfig ? 'lg:col-span-2' : ''} space-y-4`}>
           {/* Rules Table */}
-          <Card>
+          <Card className="shadow-none">
             <CardHeader>
               <CardTitle className="text-lg sm:text-xl">Rules</CardTitle>
             </CardHeader>

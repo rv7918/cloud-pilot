@@ -7,7 +7,7 @@ export default function Header() {
 
   const navLinks = [
     { href: '/', label: 'Overview', id: 'overview' },
-    { href: '#', label: 'Cost Optimisation', id: 'cost-optimisation' },
+    { href: '/cost-optimisation', label: 'Cost Optimisation', id: 'cost-optimisation' },
     { href: '/automation', label: 'Automation', id: 'automation' },
     { href: '#', label: 'Settings', id: 'settings' },
   ]

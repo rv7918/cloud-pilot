@@ -30,7 +30,7 @@ export default async function Home() {
           {/* Insights and Alerts Sidebar */}
           <div className="space-y-4">
             {/* Agent Insights */}
-            <Card>
+            <Card className="shadow-none">
               <CardHeader>
                 <div className="flex items-center gap-2">
                   <Lightbulb className="h-5 w-5 text-yellow-500" />
@@ -44,7 +44,7 @@ export default async function Home() {
             </Card>
 
             {/* Active Alerts */}
-            <Card>
+            <Card className="shadow-none">
               <CardHeader>
                 <div className="flex items-center gap-2">
                   <Bell className="h-5 w-5 text-red-500" />
