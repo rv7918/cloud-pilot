@@ -11,7 +11,7 @@ export default function CloudSpendCard(props: {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {props.data.map((provider: { name: string, spend: number, trend: number, color: string, bgColor: string }) => (
-            <Card key={provider.name} className="relative overflow-hidden" style={{ backgroundColor: provider.bgColor, boxShadow: "none" }}>
+            <Card key={provider.name} className="relative overflow-hidden shadow-none" style={{ backgroundColor: provider.bgColor, boxShadow: "none" }}>
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -23,7 +23,7 @@ export default function CloudSpendCard(props: {
               </CardHeader>
               <CardContent>
                 <div className="space-y-1">
-                  <p className="text-3xl font-bold">${provider.spend.toLocaleString()}</p>
+                  <p className="text-3xl font-medium">${provider.spend.toLocaleString()}</p>
                   <div className="flex items-center gap-1 text-sm text-muted-foreground">
                     <TrendingUp className="h-4 w-4 text-green-500" />
                     <span>{provider.trend}%</span>

@@ -19,7 +19,7 @@ export default function CloudSpendChart(props: {
     data: any;
 }) {
     return (
-        <Card>
+        <Card className="shadow-none">
         <div className="flex items-center justify-between p-5">
           <h2 className="text-xl font-semibold">Total Cloud Spend Over time</h2>
           <a href="#" className="text-primary text-sm hover:underline">Agent Summary</a>
