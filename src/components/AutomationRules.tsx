@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import {
@@ -22,41 +22,6 @@ type Rule = {
   cloud: string
   status: "Active" | "Paused"
 }
-
-const initialRulesData: Rule[] = [
-  {
-    id: "1",
-    ruleName: "Auto-Scale EC2",
-    trigger: "CPU > 70%",
-    action: "Add Instance",
-    cloud: "AWS",
-    status: "Active",
-  },
-  {
-    id: "2",
-    ruleName: "Backup SQL DB",
-    trigger: "2:00 AM Daily",
-    action: "Copy to Blob",
-    cloud: "Azure",
-    status: "Active",
-  },
-  {
-    id: "3",
-    ruleName: "Budget Alert",
-    trigger: "Spend > $10K",
-    action: "Send Slack / mail",
-    cloud: "GCP",
-    status: "Paused",
-  },
-  {
-    id: "4",
-    ruleName: "Storage Alert",
-    trigger: "Storage < 20%",
-    action: "Send Slack / mail",
-    cloud: "Azure",
-    status: "Paused",
-  },
-]
 
 const getCloudBadgeColor = (cloud: string) => {
   switch (cloud) {
@@ -86,9 +51,26 @@ const getCloudDisplayName = (value: string): string => {
 export default function AutomationRules() {
   const [showConfig, setShowConfig] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [rulesData, setRulesData] = useState<Rule[]>(initialRulesData)
+  const [rulesData, setRulesData] = useState<Rule[]>([])
+  const [loading, setLoading] = useState(true)
 
-  const handleSaveRule = (formData: {
+  useEffect(() => {
+    async function fetchRules() {
+      try {
+        const response = await fetch("/api/automationRules")
+        if (!response.ok) throw new Error("Failed to fetch rules")
+        const data = await response.json()
+        setRulesData(data)
+      } catch (error) {
+        console.error("Error fetching automation rules:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchRules()
+  }, [])
+
+  const handleSaveRule = async (formData: {
     ruleName: string
     triggerType: string
     actionType: string
@@ -100,25 +82,50 @@ export default function AutomationRules() {
       return
     }
 
-    // Clear any previous errors
     setError(null)
 
-    const newRule: Rule = {
-      id: Date.now().toString(),
-      ruleName: formData.ruleName,
-      trigger: formData.triggerType,
-      action: formData.actionType,
-      cloud: getCloudDisplayName(formData.cloudProvider),
-      status: "Active",
-    }
+    try {
+      const response = await fetch("/api/automationRules", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ruleName: formData.ruleName,
+          trigger: formData.triggerType,
+          action: formData.actionType,
+          cloud: getCloudDisplayName(formData.cloudProvider),
+          status: "Active",
+        }),
+      })
 
-    setRulesData([...rulesData, newRule])
-    setShowConfig(false)
+      if (!response.ok) throw new Error("Failed to save rule")
+
+      const newRule = await response.json()
+      setRulesData([...rulesData, newRule])
+      setShowConfig(false)
+    } catch (error) {
+      console.error("Error saving rule:", error)
+      setError("Failed to save rule. Please try again.")
+    }
   }
 
-  const handleDeleteRule = (id: string) => {
-    if (confirm("Are you sure you want to delete this rule?")) {
+  const handleDeleteRule = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this rule?")) {
+      return
+    }
+
+    try {
+      const response = await fetch(`/api/automationRules?id=${id}`, {
+        method: "DELETE",
+      })
+
+      if (!response.ok) throw new Error("Failed to delete rule")
+
       setRulesData(rulesData.filter((rule) => rule.id !== id))
+    } catch (error) {
+      console.error("Error deleting rule:", error)
+      setError("Failed to delete rule. Please try again.")
     }
   }
 
@@ -216,7 +223,20 @@ export default function AutomationRules() {
                       </tr>
                     </thead>
                     <tbody>
-                      {rulesData.map((rule) => (
+                      {loading ? (
+                        <tr>
+                          <td colSpan={6} className="py-8 text-center text-muted-foreground">
+                            Loading...
+                          </td>
+                        </tr>
+                      ) : rulesData.length === 0 ? (
+                        <tr>
+                          <td colSpan={6} className="py-8 text-center text-muted-foreground">
+                            No rules found
+                          </td>
+                        </tr>
+                      ) : (
+                        rulesData.map((rule) => (
                         <tr key={rule.id} className="border-b">
                           <td className="py-3 px-2 sm:px-4 text-sm">{rule.ruleName}</td>
                           <td className="py-3 px-2 sm:px-4 text-sm">{rule.trigger}</td>
@@ -248,7 +268,8 @@ export default function AutomationRules() {
                             </Button>
                           </td>
                         </tr>
-                      ))}
+                        ))
+                      )}
                     </tbody>
                   </table>
                 </div>

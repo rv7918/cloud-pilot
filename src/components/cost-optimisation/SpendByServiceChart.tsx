@@ -1,15 +1,9 @@
 'use client'
 
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { BarChart, Bar, XAxis, YAxis } from "recharts"
-
-const spendByServiceData = [
-  { service: "Compute", "Jan-Feb": 3200, "Mar-Apr": 2800, "May-Jun": 3500 },
-  { service: "Storage", "Jan-Feb": 1800, "Mar-Apr": 2000, "May-Jun": 1900 },
-  { service: "Database", "Jan-Feb": 1200, "Mar-Apr": 1400, "May-Jun": 1300 },
-  { service: "Networking", "Jan-Feb": 800, "Mar-Apr": 900, "May-Jun": 850 },
-]
 
 const chartConfig = {
   "Jan-Feb": {
@@ -27,6 +21,36 @@ const chartConfig = {
 }
 
 export default function SpendByServiceChart() {
+  const [spendByServiceData, setSpendByServiceData] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await fetch("/api/spendByService")
+        if (!response.ok) throw new Error("Failed to fetch data")
+        const data = await response.json()
+        setSpendByServiceData(data)
+      } catch (error) {
+        console.error("Error fetching spend by service:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchData()
+  }, [])
+
+  if (loading) {
+    return (
+      <Card className="shadow-none">
+        <CardHeader>
+          <CardTitle>Spend by service</CardTitle>
+        </CardHeader>
+        <CardContent>Loading...</CardContent>
+      </Card>
+    )
+  }
+
   return (
     <Card className="shadow-none">
       <CardHeader>
