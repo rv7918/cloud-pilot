@@ -1,15 +1,9 @@
 'use client'
 
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { AreaChart, Area, XAxis, YAxis } from "recharts"
-
-const spendByProviderData = [
-  { period: "1-10 Aug", spend: 15000 },
-  { period: "11-20 Aug", spend: 18000 },
-  { period: "21-30 Aug", spend: 23849 },
-  { period: "1-10 Nov", spend: 25000 },
-]
 
 const chartConfig = {
   spend: {
@@ -19,6 +13,36 @@ const chartConfig = {
 }
 
 export default function SpendByProviderChart() {
+  const [spendByProviderData, setSpendByProviderData] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await fetch("/api/spendByProvider")
+        if (!response.ok) throw new Error("Failed to fetch data")
+        const data = await response.json()
+        setSpendByProviderData(data)
+      } catch (error) {
+        console.error("Error fetching spend by provider:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchData()
+  }, [])
+
+  if (loading) {
+    return (
+      <Card className="shadow-none">
+        <CardHeader>
+          <CardTitle>Spend by provider</CardTitle>
+        </CardHeader>
+        <CardContent>Loading...</CardContent>
+      </Card>
+    )
+  }
+
   return (
     <Card className="shadow-none">
       <CardHeader>

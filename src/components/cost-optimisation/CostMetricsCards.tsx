@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { TrendingUp, TrendingDown } from "lucide-react"
 
@@ -11,47 +12,41 @@ type MetricCard = {
   trendColor: string
   bgColor: string
   borderColor: string
-  icon: React.ReactNode
+  iconType: string
   valueFontWeight?: string
 }
 
-const metricsData: MetricCard[] = [
-  {
-    id: "1",
-    label: "Total Monthly Spend",
-    value: "$12,420",
-    trend: "99.8%",
-    trendColor: "text-green-600",
-    bgColor: "bg-blue-50",
-    borderColor: "border-blue-100",
-    icon: <TrendingUp className="h-4 w-4" />,
-    valueFontWeight: "font-medium",
-  },
-  {
-    id: "2",
-    label: "Potential savings",
-    value: "$3,220",
-    trend: "99.8%",
-    trendColor: "text-green-600",
-    bgColor: "bg-green-50",
-    borderColor: "border-green-100",
-    icon: <TrendingUp className="h-4 w-4" />,
-    valueFontWeight: "font-medium",
-  },
-  {
-    id: "3",
-    label: "Current Budget used",
-    value: "80%",
-    trend: "50.8%",
-    trendColor: "text-red-600",
-    bgColor: "bg-yellow-50",
-    borderColor: "border-yellow-100",
-    icon: <TrendingDown className="h-4 w-4" />,
-    valueFontWeight: "font-medium",
-  },
-]
-
 export default function CostMetricsCards() {
+  const [metricsData, setMetricsData] = useState<MetricCard[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchMetrics() {
+      try {
+        const response = await fetch("/api/costMetrics")
+        if (!response.ok) throw new Error("Failed to fetch metrics")
+        const data = await response.json()
+        setMetricsData(data)
+      } catch (error) {
+        console.error("Error fetching cost metrics:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchMetrics()
+  }, [])
+
+  const getIcon = (iconType: string) => {
+    if (iconType === "TrendingUp") {
+      return <TrendingUp className="h-4 w-4" />
+    }
+    return <TrendingDown className="h-4 w-4" />
+  }
+
+  if (loading) {
+    return <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">Loading...</div>
+  }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
       {metricsData.map((metric) => (
@@ -63,7 +58,7 @@ export default function CostMetricsCards() {
             <p className="text-sm text-muted-foreground mb-2">{metric.label}</p>
             <p className={`text-3xl ${metric.valueFontWeight || 'font-bold'} mb-2`}>{metric.value}</p>
             <div className={`flex items-center gap-1 text-sm ${metric.trendColor}`}>
-              {metric.icon}
+              {getIcon(metric.iconType)}
               <span>{metric.trend}</span>
             </div>
           </CardContent>
