@@ -1,36 +1,25 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CloudPilot
 
-## Getting Started
+## About
 
-First, run the development server:
+CloudPilot is a modern cloud cost management and optimization platform that provides comprehensive spend tracking, cost analytics, and automated optimization recommendations. Built with **Next.js 16** and **TypeScript**, the application features server-side rendering with the App Router, MongoDB Atlas for data persistence, and a responsive UI powered by **Tailwind CSS** and **shadcn/ui** components. Data visualization is handled by **Recharts**, while the application includes comprehensive unit testing with **Jest** and **React Testing Library**. The platform includes features such as multi-cloud spend tracking (AWS, Azure, GCP), monthly spend analytics, cost optimization recommendations, automation rules management, and real-time alerts for cost anomalies.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+> **Note:** This is an example build of a product I architected and built from a greenfield perspective.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Tech Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Framework:** Next.js 16 (App Router)
+- **Language:** TypeScript
+- **Database:** MongoDB Atlas
+- **Styling:** Tailwind CSS
+- **UI Components:** shadcn/ui
+- **Charts:** Recharts
+- **Testing:** Jest, React Testing Library
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Features
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Overview Dashboard:** Multi-cloud spend tracking with monthly trends and capacity monitoring
+- **Cost Optimization:** Detailed cost metrics, spend analysis by service and provider, and actionable recommendations
+- **Automation Rules:** Create and manage automation rules for cost optimization across cloud providers
+- **Active Alerts:** Real-time notifications for cost anomalies and optimization opportunities
+- **Agent Insights:** AI-powered recommendations for reducing cloud spend
